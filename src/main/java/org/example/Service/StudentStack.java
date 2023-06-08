@@ -336,12 +336,12 @@ public class StudentStack<S> {
                 case 4:
                     searchStudent();
                     break;
-                case 5:
-                    break;
                 default:
                     break;
             }
-            break;
+            if (choose == 5) {
+                break;
+            }
         }while (choose != 0);
 
         System.out.println("Press enter to continue");

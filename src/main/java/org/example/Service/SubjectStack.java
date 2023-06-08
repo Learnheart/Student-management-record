@@ -221,12 +221,12 @@ public class SubjectStack<S> {
                 case 4:
                     searchSubject();
                     break;
-                case 5:
-                    break;
                 default:
                     break;
             }
-            break;
+            if (choose == 5) {
+                break;
+            }
         }while (choose != 0);
 
 
