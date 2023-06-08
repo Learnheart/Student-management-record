@@ -1,14 +1,18 @@
 package org.example;
 
 import org.example.Model.Student;
-import org.example.Service.Stack;
+import org.example.Service.StudentStack;
+import org.example.database.*;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        Stack<Student> studentStack = new Stack<>();
+    public static void main(String[] args) throws SQLException {
+        StudentStack<Student> studentStack = new StudentStack<>();
         Student student = new Student();
+        Connection connection = database.connectDb();
         Scanner scanner = new Scanner(System.in);
 
         int choose = 0;
@@ -26,17 +30,18 @@ public class Main {
                 try {
                     choose = Integer.parseInt(scanner.nextLine());
                     if (choose < 0 || choose > 5) {
-                        System.out.print("nhập sai, vui lòng nhập lại số trong khoảng 0 - 5: ");
+                        System.out.print("Invalid value, please type number in range of 0 - 5: ");
                         continue;
                     }
                     break;
                 } catch (Exception ignored) {
-                    System.out.print("Lựa chọn lại (Nhập số): ");
+                    System.out.print("Retyping (number): ");
                 }
             }
 
             switch (choose) {
                 case 1:
+
                     studentStack.addStudent();
                     break;
                 case 2:
