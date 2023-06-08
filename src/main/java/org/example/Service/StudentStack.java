@@ -280,6 +280,9 @@ public class StudentStack<S> {
         if (!result.isBeforeFirst()) {
             System.out.println("List of students is empty.");
         } else {
+            System.out.printf("| %-10s | %-25s | %-30s | %-15s | %-10s | %-20s | %-20s | %s\n",
+                    "ID", "Student Name", "Email", "Date of Birth", "Gender", "Address", "Phone Number", "Major");
+            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------");
             while (result.next()) {
                 int studentId = result.getInt("studentId");
                 String studentName = result.getString("studentName");
@@ -290,19 +293,61 @@ public class StudentStack<S> {
                 String phoneNumber = result.getString("phoneNumber");
                 String major = result.getString("major");
 
-                System.out.println("ID: " + studentId +
-                        "\n Student name: " + studentName +
-                        "\n Email: " + studentEmail +
-                        "\n Date of birth: " + studentBirth +
-                        "\n Gender: " + gender +
-                        "\n Address: " + address +
-                        "\n Phone number: " + phoneNumber +
-                        "\n Major: " + major);
-
-                System.out.println();
+                System.out.printf("| %-10s | %-25s | %-30s | %-15s | %-10s | %-20s | %-20s | %s",
+                        studentId, studentName, studentEmail, studentBirth, gender, address, phoneNumber, major);
+                System.out.println("\n");
             }
         }
+
+        //        function inside table
+        int choose = 0;
+        do {
+            System.out.println("Enter the number here: \n" +
+                    "1 for add student \t" +
+                    "2 for update student \t" +
+                    "3 for delete student \t" +
+                    "4 for search student \t" +
+                    "5 for back to menu \n" +
+                    "Choose: ");
+
+            while (true) {
+                try {
+                    choose = Integer.parseInt(input.nextLine());
+                    if (choose < 0 || choose > 5) {
+                        System.out.print("Invalid value, please type number in range of 0 - 5: ");
+                        continue;
+                    }
+                    break;
+                } catch (Exception ignored) {
+                    System.out.print("Retyping (number): ");
+                }
+            }
+
+            switch (choose) {
+                case 1:
+                    addStudent();
+                    break;
+                case 2:
+                    updateStudent();
+                    break;
+                case 3:
+                    deleteStudent();
+                    break;
+                case 4:
+                    searchStudent();
+                    break;
+                case 5:
+                    break;
+                default:
+                    break;
+            }
+            break;
+        }while (choose != 0);
+
+        System.out.println("Press enter to continue");
+        input.nextLine();
     }
+
 
     public void searchStudent() throws SQLException {
 
@@ -321,6 +366,10 @@ public class StudentStack<S> {
 
         boolean found = false;
 
+        System.out.println("-----------------------------------------------------------------------------------");
+        System.out.format("| %-10s | %-20s | %-30s | %-15s | %-8s | %-15s | %-15s | %-20s |\n", "ID", "Student Name", "Email", "Birth Date", "Gender", "Address", "Phone Number", "Major");
+        System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
         while (result.next()) {
             int studentId = result.getInt("studentId");
             String studentName = result.getString("studentName");
@@ -331,19 +380,11 @@ public class StudentStack<S> {
             String phoneNumber = result.getString("phoneNumber");
             String major = result.getString("major");
 
-            System.out.println("ID: " + studentId +
-                    "\nStudent Name: " + studentName +
-                    "\nEmail: " + studentEmail +
-                    "\nBirth date: " + studentBirth +
-                    "\nGender: " + gender +
-                    "\nAddress: " + address +
-                    "\nPhone number: " + phoneNumber +
-                    "\nMajor: " + major);
-            System.out.println();
+            System.out.format("| %-10d | %-20s | %-30s | %-15s | %-8s | %-15s | %-15s | %-20s |\n", studentId, studentName, studentEmail, studentBirth, gender, address, phoneNumber, major);
+            System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
             found = true;
         }
-
         if (!found) {
             System.out.println("No matching records found.");
         }

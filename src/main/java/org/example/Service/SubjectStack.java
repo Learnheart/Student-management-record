@@ -173,15 +173,63 @@ public class SubjectStack<S> {
         if (!result.isBeforeFirst()) {
             System.out.println("List of subject is empty");
         }else {
+            System.out.format("| %-10s | %-20s |\n", "ID", "Subject name");
+            System.out.println("+------------+----------------------+");
+
             while (result.next()) {
                 String subjectId = result.getString("subjectId");
                 String subjectName = result.getString("subjectName");
 
-                System.out.println("ID: " + subjectId +
-                        "\n Subject name: " + subjectName);
-                System.out.println();
+                System.out.format("| %-10s | %-20s |\n", subjectId, subjectName);
             }
+            System.out.println("+------------+----------------------+");
         }
+//        function inside table
+        int choose = 0;
+        do {
+            System.out.println("Enter the number here: \n" +
+                    "1 for add subject \t" +
+                    "2 for update subject \t" +
+                    "3 for delete subject \t" +
+                    "4 for search subject \t" +
+                    "5 for back to menu \n" +
+                    "Choose: ");
+
+            while (true) {
+                try {
+                    choose = Integer.parseInt(input.nextLine());
+                    if (choose < 0 || choose > 5) {
+                        System.out.print("Invalid value, please type number in range of 0 - 5: ");
+                        continue;
+                    }
+                    break;
+                } catch (Exception ignored) {
+                    System.out.print("Retyping (number): ");
+                }
+            }
+
+            switch (choose) {
+                case 1:
+                    addSubject();
+                    break;
+                case 2:
+                    updateSubject();
+                    break;
+                case 3:
+                    deleteSubject();
+                    break;
+                case 4:
+                    searchSubject();
+                    break;
+                case 5:
+                    break;
+                default:
+                    break;
+            }
+            break;
+        }while (choose != 0);
+
+
     }
 
     public void searchSubject() throws SQLException {
@@ -199,13 +247,14 @@ public class SubjectStack<S> {
 
         boolean found = false;
 
+        System.out.format("| %-10s | %-20s |\n", "ID", "Subject name");
+        System.out.println("+------------+----------------------+");
         while (result.next()) {
             String subjectId = result.getString("subjectId");
             String subjectName = result.getString("subjectName");
 
-            System.out.println("ID: " + subjectId +
-                    "\nSubject name: " + subjectName);
-            System.out.println();
+            System.out.format("| %-10s | %-20s |\n", subjectId, subjectName);
+            System.out.println("\n");
 
             found = true;
         }
