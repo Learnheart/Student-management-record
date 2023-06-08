@@ -1,7 +1,9 @@
 package org.example;
 
 import org.example.Model.Student;
+import org.example.Model.Subject;
 import org.example.Service.StudentStack;
+import org.example.Service.SubjectStack;
 import org.example.database.*;
 
 import java.sql.Connection;
@@ -11,7 +13,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws SQLException {
         StudentStack<Student> studentStack = new StudentStack<>();
+        SubjectStack<Subject> subjectStack = new SubjectStack<>();
         Student student = new Student();
+        Subject subject = new Subject();
         Connection connection = database.connectDb();
         Scanner scanner = new Scanner(System.in);
 
@@ -29,7 +33,7 @@ public class Main {
             while (true) {
                 try {
                     choose = Integer.parseInt(scanner.nextLine());
-                    if (choose < 0 || choose > 5) {
+                    if (choose < 0 || choose > 13) {
                         System.out.print("Invalid value, please type number in range of 0 - 5: ");
                         continue;
                     }
@@ -41,7 +45,6 @@ public class Main {
 
             switch (choose) {
                 case 1:
-
                     studentStack.addStudent();
                     break;
                 case 2:
@@ -53,12 +56,29 @@ public class Main {
                 case 4:
                     studentStack.deleteStudent();
                     break;
-
+                case 5:
+                    subjectStack.addSubject();
+                    break;
+                case 6:
+                    subjectStack.printSubject();
+                    break;
+                case 7:
+                    subjectStack.updateSubject();
+                    break;
+                case 8:
+                    subjectStack.deleteSubject();
+                    break;
+                case 9:
+                    studentStack.searchStudent();
+                    break;
+                case 10:
+                    subjectStack.searchSubject();
+                    break;
                 default:
                     break;
             }
         }
-        while (choose != 5);
+        while (choose != 0);
 
     }
 }

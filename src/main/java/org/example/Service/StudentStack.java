@@ -61,10 +61,11 @@ public class StudentStack<S> {
                 break;
             }
 
+            input.nextLine();
             System.out.print("Enter student name: ");
             String name;
             while (true) {
-                name = input.next();
+                name = input.nextLine();
                 if (!validate.validateName(name)) {
                     System.out.println("Invalid name!");
                     System.out.print("Retype student name: ");
@@ -109,8 +110,9 @@ public class StudentStack<S> {
                 break;
             }
 
+            input.nextLine();
             System.out.println("Enter student address: ");
-            String address = input.next();
+            String address = input.nextLine();
 
             System.out.println("Enter student phone number: ");
             String phoneNumber;
@@ -124,8 +126,9 @@ public class StudentStack<S> {
                 break;
             }
 
+            input.nextLine();
             System.out.println("Enter student major: ");
-            String major = input.next();
+            String major = input.nextLine();
 
             preparedStatement = connect.prepareStatement(addStd);
             preparedStatement.setInt(1, studentId);
@@ -148,6 +151,8 @@ public class StudentStack<S> {
         }
 
         System.out.println("Students added successfully!");
+        input.nextLine();
+
 }
 
     public void deleteStudent() throws SQLException {
@@ -224,7 +229,7 @@ public class StudentStack<S> {
         preparedStatement = connect.prepareStatement(updateStd);
 
         System.out.println("Enter new student name: ");
-        String studentName = input.next();
+        String studentName = input.nextLine();
         System.out.println("Enter new student email: ");
         String studentEmail = input.next();
         System.out.println("Enter new student birth date (yyyy-MM-dd): ");
@@ -241,11 +246,11 @@ public class StudentStack<S> {
         System.out.println("Enter new student gender: ");
         String gender = input.next();
         System.out.println("Enter new student address: ");
-        String address = input.next();
+        String address = input.nextLine();
         System.out.println("Enter new student phone number: ");
         String phoneNumber = input.next();
         System.out.println("Enter new student major: ");
-        String major = input.next();
+        String major = input.nextLine();
 
         preparedStatement.setString(1, studentName);
         preparedStatement.setString(2, studentEmail);
@@ -298,6 +303,52 @@ public class StudentStack<S> {
             }
         }
     }
+
+    public void searchStudent() throws SQLException {
+
+        connect = database.connectDb();
+        statement = connect.createStatement();
+
+        System.out.println("Enter the ID or name of the student you want to search for: ");
+        String keyword = input.nextLine();
+
+        String searchStd = "SELECT * FROM students WHERE studentId = ? OR studentName = ?";
+        preparedStatement = connect.prepareStatement(searchStd);
+        preparedStatement.setString(1, keyword);
+        preparedStatement.setString(2, keyword);
+
+        result = preparedStatement.executeQuery();
+
+        boolean found = false;
+
+        while (result.next()) {
+            int studentId = result.getInt("studentId");
+            String studentName = result.getString("studentName");
+            String studentEmail = result.getString("studentEmail");
+            String studentBirth = result.getString("studentBirth");
+            String gender = result.getString("gender");
+            String address = result.getString("address");
+            String phoneNumber = result.getString("phoneNumber");
+            String major = result.getString("major");
+
+            System.out.println("ID: " + studentId +
+                    "\nStudent Name: " + studentName +
+                    "\nEmail: " + studentEmail +
+                    "\nBirth date: " + studentBirth +
+                    "\nGender: " + gender +
+                    "\nAddress: " + address +
+                    "\nPhone number: " + phoneNumber +
+                    "\nMajor: " + major);
+            System.out.println();
+
+            found = true;
+        }
+
+        if (!found) {
+            System.out.println("No matching records found.");
+        }
+    }
+
 
 }
 
