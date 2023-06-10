@@ -228,10 +228,31 @@ public class StudentStack<S> {
                 " major = ? WHERE studentId = ?";
         preparedStatement = connect.prepareStatement(updateStd);
 
+        input.nextLine();
         System.out.println("Enter new student name: ");
-        String studentName = input.nextLine();
+        String studentName;
+        while (true) {
+            studentName = input.nextLine();
+            if (!validate.validateName(studentName)) {
+                System.out.println("Invalid name!");
+                System.out.println("Retype student name: " );
+                continue;
+            }
+            break;
+        }
+
         System.out.println("Enter new student email: ");
-        String studentEmail = input.next();
+        String studentEmail;
+        while (true) {
+            studentEmail = input.next();
+            if (!validate.validateEmail(studentEmail)) {
+                System.out.println("Invalid email: ");
+                System.out.print("Retype Email: ");
+                continue;
+            }
+            break;
+        }
+
         System.out.println("Enter new student birth date (yyyy-MM-dd): ");
         while (true) {
             try {
@@ -243,13 +264,37 @@ public class StudentStack<S> {
                 System.out.println("Invalid date. Please enter a valid date in the format of yyyy-MM-dd: ");
             }
         }
-        System.out.println("Enter new student gender: ");
-        String gender = input.next();
-        System.out.println("Enter new student address: ");
+
+        System.out.println("Enter student gender: ");
+        String gender;
+        while (true) {
+            gender = input.next();
+            if (!validate.validateGender(gender)) {
+                System.out.println("Invalid gender: ");
+                System.out.print("Retype student gender: ");
+                continue;
+            }
+            break;
+        }
+
+        input.nextLine();
+        System.out.println("Enter student address: ");
         String address = input.nextLine();
-        System.out.println("Enter new student phone number: ");
-        String phoneNumber = input.next();
-        System.out.println("Enter new student major: ");
+
+        System.out.println("Enter student phone number: ");
+        String phoneNumber;
+        while (true) {
+            phoneNumber = input.next();
+            if (!validate.validatePhone(phoneNumber)) {
+                System.out.println("Invalid phone number: ");
+                System.out.print("Retype student phone number: ");
+                continue;
+            }
+            break;
+        }
+
+        input.nextLine();
+        System.out.println("Enter student major: ");
         String major = input.nextLine();
 
         preparedStatement.setString(1, studentName);
@@ -307,7 +352,8 @@ public class StudentStack<S> {
                     "2 for update student \t" +
                     "3 for delete student \t" +
                     "4 for search student \t" +
-                    "5 for back to menu \n" +
+                    "5 for print student list \t" +
+                    "6 for back to menu \n" +
                     "Choose: ");
 
             while (true) {
@@ -335,6 +381,9 @@ public class StudentStack<S> {
                     break;
                 case 4:
                     searchStudent();
+                    break;
+                case 5:
+                    printStudents();
                     break;
                 default:
                     break;

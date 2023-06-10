@@ -192,7 +192,8 @@ public class SubjectStack<S> {
                     "2 for update subject \t" +
                     "3 for delete subject \t" +
                     "4 for search subject \t" +
-                    "5 for back to menu \n" +
+                    "5 for print subject list \t" +
+                    "6 for back to menu \n" +
                     "Choose: ");
 
             while (true) {
@@ -219,6 +220,9 @@ public class SubjectStack<S> {
                     deleteSubject();
                     break;
                 case 4:
+                    printSubject();
+                    break;
+                case 5:
                     searchSubject();
                     break;
                 default:
