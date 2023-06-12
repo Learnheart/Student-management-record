@@ -1,6 +1,6 @@
 package org.example.model;
 
-public class Result {
+public class Result implements Comparable<Result> {
     private int studentId;
     private int subjectId;
     private int courseId;
@@ -17,18 +17,6 @@ public class Result {
         this.finalScore = finalScore;
         this.totalMarks = calculateTotalMarks();
         this.courseResult = calculateCourseResult();
-    }
-
-    private double calculateTotalMarks() {
-        return midtermScore + finalScore;
-    }
-
-    private String calculateCourseResult() {
-        if (totalMarks >= 50) {
-            return "Pass";
-        } else {
-            return "Fail";
-        }
     }
 
     public int getStudentId() {
@@ -59,7 +47,7 @@ public class Result {
         return midtermScore;
     }
 
-    public void setMidtermScore(double midtermScore) {
+    public void setMidtermscore(double midtermScore) {
         this.midtermScore = midtermScore;
     }
 
@@ -67,7 +55,7 @@ public class Result {
         return finalScore;
     }
 
-    public void setFinalScore(double finalScore) {
+    public void setFinalSCore(double finalScore) {
         this.finalScore = finalScore;
     }
 
@@ -77,5 +65,22 @@ public class Result {
 
     public String getCourseResult() {
         return courseResult;
+    }
+
+    private double calculateTotalMarks() {
+        return midterm + finalExam;
+    }
+
+    private String calculateCourseResult() {
+        if (totalMarks >= 50) {
+            return "Pass";
+        } else {
+            return "Fail";
+        }
+    }
+
+    @Override
+    public int compareTo(Result otherResult) {
+        return Double.compare(otherResult.getFinalScore(), this.finalScore);
     }
 }
