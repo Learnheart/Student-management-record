@@ -45,7 +45,7 @@ public class Main {
                         userStack.login();
                     } else {
                     }
-                    clearConsole();
+
                     break;
                 case 2:
 //                    user can registration
@@ -62,20 +62,4 @@ public class Main {
 
     }
 
-    public static void clearConsole() throws IOException, InterruptedException {
-
-        System.out.println(System.getProperty("os.name"));
-
-        // for Windows
-        if (System.getProperty("os.name").contains("Windows")) {
-//            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            new ProcessBuilder("cmd", "/c", "cls").redirectErrorStream(true).inheritIO().start().waitFor();
-
-        }
-        // for Linux/Mac
-        else {
-            System.out.print("\033[H\033[2J");
-            System.out.flush();
-        }
-    }
 }

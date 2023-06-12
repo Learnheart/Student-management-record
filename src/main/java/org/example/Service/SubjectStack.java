@@ -193,7 +193,7 @@ public class SubjectStack<S> {
                     "3 for delete subject \t" +
                     "4 for search subject \t" +
                     "5 for print subject list \t" +
-                    "6 for back to menu \n" +
+                    "0 for back to menu \n" +
                     "Choose: ");
 
             while (true) {
@@ -227,9 +227,6 @@ public class SubjectStack<S> {
                     break;
                 default:
                     break;
-            }
-            if (choose == 5) {
-                break;
             }
         }while (choose != 0);
 

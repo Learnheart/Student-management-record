@@ -27,36 +27,42 @@ public class UserService<S> {
     public void login() throws SQLException {
         connect = database.connectDb();
 
-        // Prompt user for username and password
-        System.out.print("Enter username: ");
-        String username = input.nextLine();
-        System.out.print("Enter password: ");
-        String password = input.nextLine();
+        boolean loggedIn = false;
 
-        try {
-            // Retrieve user from database with matching username
-            String query = "SELECT * FROM user WHERE username = ?";
-            preparedStatement = connect.prepareStatement(query);
-            preparedStatement.setString(1, username);
-            result = preparedStatement.executeQuery();
+        while (!loggedIn) {
+            System.out.print("Enter username: ");
+            String username = input.nextLine();
+            System.out.print("Enter password: ");
+            String password = input.nextLine();
 
-            if (result.next()) {
-                String savedPassword = result.getString("password");
+            try {
+                // Retrieve user from database with matching username
+                String query = "SELECT * FROM user WHERE username = ?";
+                preparedStatement = connect.prepareStatement(query);
+                preparedStatement.setString(1, username);
+                result = preparedStatement.executeQuery();
 
-                if (savedPassword.equals(password)) {
-                    System.out.println("Login successful!");
-                    System.out.println("\n");
+                if (result.next()) {
+                    String savedPassword = result.getString("password");
+
+                    if (savedPassword.equals(password)) {
+                        System.out.println("Login successful!");
+                        System.out.println("\n");
+                        loggedIn = true;
+                    } else {
+                        System.out.println("Invalid password.");
+                        System.out.println("\n");
+                    }
                 } else {
-                    System.out.println("Invalid password.");
+                    System.out.println("Invalid username.");
                     System.out.println("\n");
                 }
-            } else {
-                System.out.println("Invalid username.");
-                System.out.println("\n");
+            } catch (Exception e) {
+                System.out.println("An error occurred while logging in.");
+                e.printStackTrace();
             }
-        } catch (Exception Ignore) {
-            System.out.println("Your login information is invalid! \nPlease try again\n");;
         }
+
         int choose;
         do {
             System.out.println("Enter the number here: \n" +

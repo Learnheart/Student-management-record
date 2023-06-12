@@ -1,4 +1,4 @@
-package org.example.model;
+package org.example.Model;
 
 public class Result implements Comparable<Result> {
     private int studentId;
@@ -68,7 +68,7 @@ public class Result implements Comparable<Result> {
     }
 
     private double calculateTotalMarks() {
-        return midterm + finalExam;
+        return midtermScore + finalScore;
     }
 
     private String calculateCourseResult() {

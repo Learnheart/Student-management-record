@@ -153,41 +153,99 @@ public class StudentStack<S> {
         System.out.println("Students added successfully!");
         input.nextLine();
 
-}
+    }
 
     public void deleteStudent() throws SQLException {
-        connect = database.connectDb();
-        System.out.println("Enter the id of student you want to delete: ");
-        int studentId = input.nextInt();
-        boolean found = false;
-        String deleteStd = "DELETE FROM students WHERE studentId = ?";
-        preparedStatement = connect.prepareStatement(deleteStd);
-        preparedStatement.setInt(1, studentId);
-        int count = preparedStatement.executeUpdate();
-        if (count > 0) {
-            found = true;
-            while (!stack.isEmpty()) {
-                Student currentStudent = stack.pop();
-                if (currentStudent.getStudentId() == studentId) {
-                    System.out.println("Student with ID " + studentId + " has been deleted.");
-                    break;
+        try (Connection connection = database.connectDb();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM students WHERE studentId = ?")) {
+
+            int studentId = 0;
+            boolean validInput = false;
+            while (!validInput) {
+                System.out.println("Enter the id of student you want to delete: ");
+                String inputStr = input.nextLine().trim();
+                if (inputStr.isEmpty()) {
+                    System.out.println("Invalid input. Please enter an integer value.");
                 } else {
-                    stack.push(currentStudent);
+                    try {
+                        studentId = Integer.parseInt(inputStr);
+                        validInput = true;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter an integer value.");
+                    }
                 }
             }
-        }
-        if (!found) {
-            System.out.println("Student with ID " + studentId + " was not found.");
+
+            preparedStatement.setInt(1, studentId);
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                while (!stack.isEmpty()) {
+                    Student currentStudent = stack.pop();
+                    if (currentStudent.getStudentId() == studentId) {
+                        System.out.println("Student with ID " + studentId + " has been deleted.\n\n");
+                        break;
+                    } else {
+                        stack.push(currentStudent);
+                    }
+                }
+            } else {
+                System.out.println("Student with ID " + studentId + " was not found.\n\n");
+            }
         }
     }
 
 
 
 
+    public void sortingByName() throws SQLException {
+        connect = database.connectDb();
+        statement = connect.createStatement();
+
+        String query = "SELECT * FROM students ORDER BY studentName DESC";
+        result = statement.executeQuery(query);
+
+        Stack<String> stack = new Stack<>();
+
+        if (!result.isBeforeFirst()) {
+            System.out.println("List of students is empty.");
+        } else {
+            while (result.next()) {
+                int studentId = result.getInt("studentId");
+                String studentName = result.getString("studentName");
+                String studentEmail = result.getString("studentEmail");
+                LocalDate studentBirth = result.getDate("studentBirth").toLocalDate();
+                String gender = result.getString("gender");
+                String address = result.getString("address");
+                String phoneNumber = result.getString("phoneNumber");
+                String major = result.getString("major");
+
+                stack.push(String.format("| %-10s | %-25s | %-30s | %-15s | %-10s | %-20s | %-20s | %s\n",
+                        studentId, studentName, studentEmail, studentBirth, gender, address, phoneNumber, major));
+            }
+
+            System.out.printf("| %-10s | %-25s | %-30s | %-15s | %-10s | %-20s | %-20s | %s\n",
+                    "ID", "Student Name", "Email", "Date of Birth", "Gender", "Address", "Phone Number", "Major");
+            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+            while (!stack.empty()) {
+                System.out.print(stack.pop());
+            }
+        }
+    }
+
     public void updateStudent() throws SQLException {
         connect = database.connectDb();
         System.out.println("Enter the id of student you want to update: ");
-        int studentId = input.nextInt();
+        String studentIdStr = input.nextLine();
+
+        if (studentIdStr.isEmpty()) {
+            System.out.println("Invalid ID!");
+            System.out.println("\n");
+            return;
+        }
+
+        int studentId = Integer.parseInt(studentIdStr);
 
         String selectStd = "SELECT * FROM students WHERE studentId=?";
         preparedStatement = connect.prepareStatement(selectStd);
@@ -195,7 +253,7 @@ public class StudentStack<S> {
         result = preparedStatement.executeQuery();
 
         if (!result.isBeforeFirst()) {
-            System.out.println("Student with ID " + studentId + " was not found.");
+            System.out.println("Student with ID " + studentId + " was not found.\n\n");
             return;
         }
 
@@ -308,42 +366,13 @@ public class StudentStack<S> {
         int count = preparedStatement.executeUpdate();
         if (count > 0) {
             System.out.println("Student with ID " + studentId + " has been updated.");
+            System.out.println("\n");
             return;
         }
 
-        System.out.println("Update failed for student with ID " + studentId);
+        System.out.println("Update failed for student with ID " + studentId + "\n\n");
     }
 
-
-    public void sortingByName() throws SQLException {
-        connect = database.connectDb();
-        statement = connect.createStatement();
-
-        String query = "SELECT * FROM students ORDER BY studentName";
-        result = statement.executeQuery(query);
-        if (!result.isBeforeFirst()) {
-            System.out.println("List of students is empty.");
-        } else {
-            System.out.printf("| %-10s | %-25s | %-30s | %-15s | %-10s | %-20s | %-20s | %s\n",
-                    "ID", "Student Name", "Email", "Date of Birth", "Gender", "Address", "Phone Number", "Major");
-            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------");
-            while (result.next()) {
-                int studentId = result.getInt("studentId");
-                String studentName = result.getString("studentName");
-                String studentEmail = result.getString("studentEmail");
-                LocalDate studentBirth = result.getDate("studentBirth").toLocalDate();
-                String gender = result.getString("gender");
-                String address = result.getString("address");
-                String phoneNumber = result.getString("phoneNumber");
-                String major = result.getString("major");
-
-                System.out.printf("| %-10s | %-25s | %-30s | %-15s | %-10s | %-20s | %-20s | %s",
-                        studentId, studentName, studentEmail, studentBirth, gender, address, phoneNumber, major);
-                System.out.println("\n");
-            }
-        }
-
-    }
 
     public void printStudents() throws SQLException {
         connect = database.connectDb();
@@ -368,38 +397,40 @@ public class StudentStack<S> {
 
                 System.out.printf("| %-10s | %-25s | %-30s | %-15s | %-10s | %-20s | %-20s | %s",
                         studentId, studentName, studentEmail, studentBirth, gender, address, phoneNumber, major);
-                System.out.println("\n");
+                System.out.println();
             }
         }
 
-        //        function inside table
+        // Close database connection and statement
+        result.close();
+        statement.close();
+        connect.close();
+
         int choose = 0;
         do {
-            System.out.println("Enter the number here: \n" +
+            System.out.println("\nEnter the number here: \n" +
                     "1 for add student \t" +
                     "2 for update student \t" +
                     "3 for delete student \t" +
                     "4 for search student \t" +
-                    "5 for print student list \t" +
-                    "6 for back to menu \n" +
+                    "5 for print student list \t\n" +
+                    "6 for sorting ascending by student name \t" +
+                    "0 for back to menu \n" +
                     "Choose: ");
 
             while (true) {
-                try {
-                    choose = Integer.parseInt(input.nextLine());
-                    if (choose < 0 || choose > 7) {
-                        System.out.print("Invalid value, please type number in range of 0 - 7: ");
-                        continue;
-                    }
-                    break;
-                } catch (Exception ignored) {
-                    System.out.print("Retyping (number): ");
+                choose = Integer.parseInt(input.nextLine());
+                if (choose < 0 || choose > 6) {
+                    System.out.print("Invalid value, please type number in range of 0 - 6: ");
+                    continue;
                 }
+                break;
             }
 
             switch (choose) {
                 case 1:
                     addStudent();
+                    printStudents();
                     break;
                 case 2:
                     updateStudent();
@@ -419,14 +450,12 @@ public class StudentStack<S> {
                 default:
                     break;
             }
-            if (choose == 7) {
-                break;
-            }
         }while (choose != 0);
 
         System.out.println("Press enter to continue");
         input.nextLine();
     }
+
 
 
     public void searchStudent() throws SQLException {
