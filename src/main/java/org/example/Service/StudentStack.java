@@ -315,7 +315,35 @@ public class StudentStack<S> {
     }
 
 
+    public void sortingByName() throws SQLException {
+        connect = database.connectDb();
+        statement = connect.createStatement();
 
+        String query = "SELECT * FROM students ORDER BY studentName";
+        result = statement.executeQuery(query);
+        if (!result.isBeforeFirst()) {
+            System.out.println("List of students is empty.");
+        } else {
+            System.out.printf("| %-10s | %-25s | %-30s | %-15s | %-10s | %-20s | %-20s | %s\n",
+                    "ID", "Student Name", "Email", "Date of Birth", "Gender", "Address", "Phone Number", "Major");
+            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------");
+            while (result.next()) {
+                int studentId = result.getInt("studentId");
+                String studentName = result.getString("studentName");
+                String studentEmail = result.getString("studentEmail");
+                LocalDate studentBirth = result.getDate("studentBirth").toLocalDate();
+                String gender = result.getString("gender");
+                String address = result.getString("address");
+                String phoneNumber = result.getString("phoneNumber");
+                String major = result.getString("major");
+
+                System.out.printf("| %-10s | %-25s | %-30s | %-15s | %-10s | %-20s | %-20s | %s",
+                        studentId, studentName, studentEmail, studentBirth, gender, address, phoneNumber, major);
+                System.out.println("\n");
+            }
+        }
+
+    }
 
     public void printStudents() throws SQLException {
         connect = database.connectDb();
@@ -359,8 +387,8 @@ public class StudentStack<S> {
             while (true) {
                 try {
                     choose = Integer.parseInt(input.nextLine());
-                    if (choose < 0 || choose > 5) {
-                        System.out.print("Invalid value, please type number in range of 0 - 5: ");
+                    if (choose < 0 || choose > 7) {
+                        System.out.print("Invalid value, please type number in range of 0 - 7: ");
                         continue;
                     }
                     break;
@@ -385,10 +413,13 @@ public class StudentStack<S> {
                 case 5:
                     printStudents();
                     break;
+                case 6:
+                    sortingByName();
+                    break;
                 default:
                     break;
             }
-            if (choose == 5) {
+            if (choose == 7) {
                 break;
             }
         }while (choose != 0);

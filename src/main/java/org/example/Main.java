@@ -14,8 +14,6 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
-
-
     public static void main(String[] args) throws SQLException, IOException, InterruptedException {
         StudentStack<Student> studentStack = new StudentStack<>();
         SubjectStack<Subject> subjectStack = new SubjectStack<>();
