@@ -220,16 +220,16 @@ public class SubjectStack<S> {
                     deleteSubject();
                     break;
                 case 4:
-                    printSubject();
+                    searchSubject();
                     break;
                 case 5:
-                    searchSubject();
+                    printSubject();
                     break;
                 default:
                     break;
             }
         }while (choose != 0);
-
+        return;
 
     }
 

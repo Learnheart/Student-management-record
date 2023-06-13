@@ -150,8 +150,8 @@ public class StudentStack<S> {
             stack.push(tempStack.pop());
         }
 
-        System.out.println("Students added successfully!");
-        input.nextLine();
+        System.out.println("Students added successfully! \n\n");
+//        input.nextLine();
 
     }
 
@@ -286,7 +286,8 @@ public class StudentStack<S> {
                 " major = ? WHERE studentId = ?";
         preparedStatement = connect.prepareStatement(updateStd);
 
-        input.nextLine();
+//        input.nextLine();
+        System.out.println("\n------------------------------------------\n");
         System.out.println("Enter new student name: ");
         String studentName;
         while (true) {
@@ -417,8 +418,7 @@ public class StudentStack<S> {
                     "6 for sorting ascending by student name \t" +
                     "0 for back to menu \n" +
                     "Choose: ");
-
-            while (true) {
+            while (input.hasNext()) {
                 choose = Integer.parseInt(input.nextLine());
                 if (choose < 0 || choose > 6) {
                     System.out.print("Invalid value, please type number in range of 0 - 6: ");
@@ -426,6 +426,8 @@ public class StudentStack<S> {
                 }
                 break;
             }
+
+
 
             switch (choose) {
                 case 1:
@@ -452,8 +454,6 @@ public class StudentStack<S> {
             }
         }while (choose != 0);
 
-        System.out.println("Press enter to continue");
-        input.nextLine();
     }
 
 

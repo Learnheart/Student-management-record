@@ -35,6 +35,7 @@ public class UserService<S> {
             System.out.print("Enter password: ");
             String password = input.nextLine();
 
+
             try {
                 // Retrieve user from database with matching username
                 String query = "SELECT * FROM user WHERE username = ?";
