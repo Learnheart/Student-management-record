@@ -70,17 +70,4 @@ public class Result implements Comparable<Result> {
     private double calculateTotalMarks() {
         return midtermScore + finalScore;
     }
-
-    private String calculateCourseResult() {
-        if (totalMarks >= 50) {
-            return "Pass";
-        } else {
-            return "Fail";
-        }
-    }
-
-    @Override
-    public int compareTo(Result otherResult) {
-        return Double.compare(otherResult.getFinalScore(), this.finalScore);
-    }
 }
