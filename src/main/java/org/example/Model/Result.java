@@ -1,65 +1,46 @@
-package org.example.Model;
+import java.util.Arrays;
+import java.util.Comparator;
 
-public class Result implements Comparable<Result> {
-    private int studentId;
-    private int subjectId;
-    private int courseId;
-    private double midtermScore;
-    private double finalScore;
-    private double totalMarks;
+class Student {
+    private int studentID;
+    private int subjectID;
+    private int courseID;
+    private int midtermExam;
+    private int finalExam;
+    private int totalMarks;
     private String courseResult;
 
-    public Result(int studentId, int subjectId, int courseId, double midtermScore, double finalScore) {
-        this.studentId = studentId;
-        this.subjectId = subjectId;
-        this.courseId = courseId;
-        this.midtermScore = midtermScore;
-        this.finalScore = finalScore;
-        this.totalMarks = calculateTotalMarks();
+    public Student(int studentID, int subjectID, int courseID, int midtermExam, int finalExam) {
+        this.studentID = studentID;
+        this.subjectID = subjectID;
+        this.courseID = courseID;
+        this.midtermExam = midtermExam;
+        this.finalExam = finalExam;
+        this.totalMarks = midtermExam + finalExam;
         this.courseResult = calculateCourseResult();
     }
 
-    public int getStudentId() {
-        return studentId;
+    public int getStudentID() {
+        return studentID;
     }
 
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
+    public int getSubjectID() {
+        return subjectID;
     }
 
-    public int getSubjectId() {
-        return subjectId;
+    public int getCourseID() {
+        return courseID;
     }
 
-    public void setSubjectId(int subjectId) {
-        this.subjectId = subjectId;
+    public int getMidtermExam() {
+        return midtermExam;
     }
 
-    public int getCourseId() {
-        return courseId;
+    public int getFinalExam() {
+        return finalExam;
     }
 
-    public void setCourseId(int courseId) {
-        this.courseId = courseId;
-    }
-
-    public double getMidtermScore() {
-        return midtermScore;
-    }
-
-    public void setMidtermscore(double midtermScore) {
-        this.midtermScore = midtermScore;
-    }
-
-    public double getFinalScore() {
-        return finalScore;
-    }
-
-    public void setFinalSCore(double finalScore) {
-        this.finalScore = finalScore;
-    }
-
-    public double getTotalMarks() {
+    public int getTotalMarks() {
         return totalMarks;
     }
 
@@ -67,20 +48,38 @@ public class Result implements Comparable<Result> {
         return courseResult;
     }
 
-    private double calculateTotalMarks() {
-        return midtermScore + finalScore;
-    }
-
     private String calculateCourseResult() {
-        if (totalMarks >= 50) {
+        if (totalMarks >= 4) {
             return "Pass";
         } else {
             return "Fail";
         }
     }
+}
 
-    @Override
-    public int compareTo(Result otherResult) {
-        return Double.compare(otherResult.getFinalScore(), this.finalScore);
+public class Result {
+    public static void main(String[] args) {
+        Student[] students = {
+                new Student(123, 1, 01, 8, 9),
+                new Student(234, 1, 01, 7, 8),
+                new Student(345, 2, 02, 6, 7),
+                new Student(456, 2, 02, 5, 4),
+                new Student(567, 3, 03, 6, 2)
+        };
+
+        Arrays.sort(students, Comparator.comparingInt(Student::getFinalExam).reversed());
+
+        System.out.println("Student Results (sorted in descending order based on final exam score):");
+        for (Student student : students) {
+            System.out.println("Student ID: " + student.getStudentID());
+            System.out.println("Subject ID: " + student.getSubjectID());
+            System.out.println("Course ID: " + student.getCourseID());
+            System.out.println("Midterm Exam Marks: " + student.getMidtermExam());
+            System.out.println("Final Exam Marks: " + student.getFinalExam());
+            System.out.println("Total Marks: " + student.getTotalMarks());
+            System.out.println("Course Result: " + student.getCourseResult());
+            System.out.println();
+        }
     }
 }
+
