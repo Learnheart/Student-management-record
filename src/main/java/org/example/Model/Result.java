@@ -1,86 +1,84 @@
-package org.example.Model;
-
-public class Result implements Comparable<Result> {
-    private int studentId;
-    private int subjectId;
-    private int courseId;
-    private double midtermScore;
-    private double finalScore;
-    private double totalMarks;
+class Result {
+    private int studentID;
+    private int subjectID;
+    private int courseID;
+    private int midtermExam;
+    private int finalExam;
+    private int totalMarks;
     private String courseResult;
 
-    public Result(int studentId, int subjectId, int courseId, double midtermScore, double finalScore) {
-        this.studentId = studentId;
-        this.subjectId = subjectId;
-        this.courseId = courseId;
-        this.midtermScore = midtermScore;
-        this.finalScore = finalScore;
-        this.totalMarks = calculateTotalMarks();
+    public Result(int studentID, int subjectID, int courseID, int midtermExam, int finalExam) {
+        this.studentID = studentID;
+        this.subjectID = subjectID;
+        this.courseID = courseID;
+        this.midtermExam = midtermExam;
+        this.finalExam = finalExam;
+        this.totalMarks = midtermExam + finalExam;
         this.courseResult = calculateCourseResult();
     }
 
-    public int getStudentId() {
-        return studentId;
+    public int getStudentID() {
+        return studentID;
     }
 
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
+    public void setStudentID(int studentID) {
+        this.studentID = studentID;
     }
 
-    public int getSubjectId() {
-        return subjectId;
+    public int getSubjectID() {
+        return subjectID;
     }
 
-    public void setSubjectId(int subjectId) {
-        this.subjectId = subjectId;
+    public void setSubjectID(int subjectID) {
+        this.subjectID = subjectID;
     }
 
-    public int getCourseId() {
-        return courseId;
+    public int getCourseID() {
+        return courseID;
     }
 
-    public void setCourseId(int courseId) {
-        this.courseId = courseId;
+    public void setCourseID(int courseID) {
+        this.courseID = courseID;
     }
 
-    public double getMidtermScore() {
-        return midtermScore;
+    public int getMidtermExam() {
+        return midtermExam;
     }
 
-    public void setMidtermscore(double midtermScore) {
-        this.midtermScore = midtermScore;
+    public void setMidtermExam(int midtermExam) {
+        this.midtermExam = midtermExam;
     }
 
-    public double getFinalScore() {
-        return finalScore;
+    public int getFinalExam() {
+        return finalExam;
     }
 
-    public void setFinalSCore(double finalScore) {
-        this.finalScore = finalScore;
+    public void setFinalExam(int finalExam) {
+        this.finalExam = finalExam;
     }
 
-    public double getTotalMarks() {
+    public int getTotalMarks() {
         return totalMarks;
+    }
+
+    public void setTotalMarks(int totalMarks) {
+        this.totalMarks = totalMarks;
     }
 
     public String getCourseResult() {
         return courseResult;
     }
 
-    private double calculateTotalMarks() {
-        return midtermScore + finalScore;
+    public void setCourseResult(String courseResult) {
+        this.courseResult = courseResult;
     }
 
     private String calculateCourseResult() {
-        if (totalMarks >= 50) {
+        if (totalMarks >= 4) {
             return "Pass";
         } else {
             return "Fail";
         }
     }
-
-    @Override
-    public int compareTo(Result otherResult) {
-        return Double.compare(otherResult.getFinalScore(), this.finalScore);
-    }
 }
+
