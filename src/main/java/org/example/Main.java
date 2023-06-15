@@ -42,10 +42,11 @@ public class Main {
             switch (choose) {
                 case 1:
                     if (!loggedIn) {
+                        clearConsole();
                         userStack.login();
-                    } else {
-                    }
 
+                    }
+                    clearConsole();
                     break;
                 case 2:
 //                    user can registration
@@ -60,6 +61,22 @@ public class Main {
 
         } while (choose != 0);
 
+    }
+
+    public static void clearConsole() {
+        try {
+            final String os = System.getProperty("os.name");
+
+            if (os.contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                Runtime.getRuntime().exec("clear");
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

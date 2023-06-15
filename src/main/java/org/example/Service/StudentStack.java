@@ -180,15 +180,16 @@ public class StudentStack<S> {
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
-                while (!stack.isEmpty()) {
-                    Student currentStudent = stack.pop();
-                    if (currentStudent.getStudentId() == studentId) {
-                        System.out.println("Student with ID " + studentId + " has been deleted.\n\n");
-                        break;
-                    } else {
-                        stack.push(currentStudent);
-                    }
-                }
+//                while (!stack.isEmpty()) {
+//                    Student currentStudent = stack.pop();
+//                    if (currentStudent.getStudentId() == studentId) {
+//                        System.out.println("Student with ID " + studentId + " has been deleted.\n\n");
+//                        break;
+//                    } else {
+//                        stack.push(currentStudent);
+//                    }
+//                }
+                System.out.println("Student with ID " + studentId + " has been deleted.\n\n");
             } else {
                 System.out.println("Student with ID " + studentId + " was not found.\n\n");
             }

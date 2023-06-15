@@ -79,38 +79,43 @@ public class SubjectStack<S> {
     public void deleteSubject() throws SQLException {
         connect = database.connectDb();
 
-        System.out.println("Enter the id subject you want to delete: ");
+        String deleteSubject = "DELETE FROM subject WHERE subjectId = ?";
+        preparedStatement = connect.prepareStatement(deleteSubject);
+
+        System.out.println("Enter the id of subject you want to delete: ");
         String subjectId = input.nextLine();
-        boolean found = false;
+
+        if (subjectId.isEmpty()) {
+            System.out.println("Invalid value. Please retyping id: ");
+        }
 
         // Create a stack to store subjects that are not being deleted
         Stack<Subject> tempStack = new Stack<>();
 
-        while (!subjectList.isEmpty()) {
-            Subject currentSubject = subjectList.pop();
-            if (currentSubject.getSubjectId().equals(subjectId)) {
-                found = true;
-                System.out.println("Subject with ID " + subjectId + " has been deleted!");
-                break;
-            } else {
-                tempStack.push(currentSubject);
-            }
-        }
+//        while (!subjectList.isEmpty()) {
+//            Subject currentSubject = subjectList.pop();
+//            if (currentSubject.getSubjectId().equals(subjectId)) {
+//                System.out.println("Subject with ID " + subjectId + " has been deleted!");
+//                break;
+//            } else {
+//                tempStack.push(currentSubject);
+//            }
+//        }
 
         // Push the remaining subjects back onto the original stack
         while (!tempStack.isEmpty()) {
             subjectList.push(tempStack.pop());
         }
 
-        if (!found) {
-            System.out.println("Subject with ID " + subjectId + " was not found.");
-        } else {
-            // Delete the subject from the database
-            String deleteSubject = "DELETE FROM subject WHERE subjectId = ?";
-            preparedStatement = connect.prepareStatement(deleteSubject);
-            preparedStatement.setString(1, subjectId);
-            int count = preparedStatement.executeUpdate();
+        // Delete the subject from the database
+        preparedStatement.setString(1, subjectId);
+        int count = preparedStatement.executeUpdate();
+        System.out.println("Subject with ID " + subjectId + " has been deleted! \n \n");
+
+        if (count == 0) {
+            System.out.println("Subject with ID " + subjectId + " not found! \n \n");
         }
+
     }
 
     public void updateSubject() throws SQLException {
@@ -196,17 +201,14 @@ public class SubjectStack<S> {
                     "0 for back to menu \n" +
                     "Choose: ");
 
-            while (true) {
-                try {
+            while (input.hasNext()) {
+
                     choose = Integer.parseInt(input.nextLine());
                     if (choose < 0 || choose > 5) {
                         System.out.print("Invalid value, please type number in range of 0 - 5: ");
                         continue;
                     }
                     break;
-                } catch (Exception ignored) {
-                    System.out.print("Retyping (number): ");
-                }
             }
 
             switch (choose) {
