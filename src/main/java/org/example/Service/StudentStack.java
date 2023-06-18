@@ -2,14 +2,13 @@ package org.example.Service;
 import org.example.Model.Student;
 import org.example.database;
 
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Stack;
-
-
 
 public class StudentStack<S> {
     private LinkedList<Student> stack = new LinkedList<>();

@@ -1,8 +1,6 @@
 package org.example.Service;
 
-import org.example.Model.Student;
-import org.example.Model.Subject;
-import org.example.Model.User;
+import org.example.Model.*;
 import org.example.database;
 
 import javax.swing.*;
@@ -15,6 +13,8 @@ public class UserService<S> {
     private LinkedList<User> userList = new LinkedList<User>();
     private StudentStack<Student> studentStack = new StudentStack<>();
     private SubjectStack<Subject> subjectStack = new SubjectStack<>();
+    private CourseStack<Course> courseStack = new CourseStack<>();
+    private ResultStack<Result> resultStack = new ResultStack<>();
     Student student = new Student();
     Subject subject = new Subject();
     User user = new User();
@@ -96,10 +96,10 @@ public class UserService<S> {
 
                     break;
                 case 3:
-
+                    courseStack.printAllCourses();
                     break;
                 case 4:
-
+                    resultStack.printResult();
                     break;
                 default:
                     break;

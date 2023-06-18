@@ -73,50 +73,50 @@ public class SubjectStack<S> {
         }
 
         System.out.println("Subject added successfully!");
-        return;
     }
 
     public void deleteSubject() throws SQLException {
         connect = database.connectDb();
 
-        String deleteSubject = "DELETE FROM subject WHERE subjectId = ?";
-        preparedStatement = connect.prepareStatement(deleteSubject);
-
         System.out.println("Enter the id of subject you want to delete: ");
         String subjectId = input.nextLine();
 
-        if (subjectId.isEmpty()) {
-            System.out.println("Invalid value. Please retyping id: ");
+        // Prepare a SELECT statement to retrieve the course with the given ID
+        String selectSubject = "SELECT * FROM subject WHERE subjectId = ?";
+        preparedStatement = connect.prepareStatement(selectSubject);
+        preparedStatement.setString(1, subjectId);
+        result = preparedStatement.executeQuery();
+
+        if (!result.isBeforeFirst()) {
+            System.out.println("Subject with ID " + subjectId + " doesn't exist!");
+            return;
         }
 
-        // Create a stack to store subjects that are not being deleted
-        Stack<Subject> tempStack = new Stack<>();
-
-//        while (!subjectList.isEmpty()) {
-//            Subject currentSubject = subjectList.pop();
-//            if (currentSubject.getSubjectId().equals(subjectId)) {
-//                System.out.println("Subject with ID " + subjectId + " has been deleted!");
-//                break;
-//            } else {
-//                tempStack.push(currentSubject);
-//            }
-//        }
-
-        // Push the remaining subjects back onto the original stack
-        while (!tempStack.isEmpty()) {
-            subjectList.push(tempStack.pop());
-        }
-
-        // Delete the subject from the database
+        // If the course exists, prepare a DELETE statement to delete it from the database
+        String deleteSubject = "DELETE FROM subject WHERE subjectId = ?";
+        preparedStatement = connect.prepareStatement(deleteSubject);
         preparedStatement.setString(1, subjectId);
         int count = preparedStatement.executeUpdate();
-        System.out.println("Subject with ID " + subjectId + " has been deleted! \n \n");
 
-        if (count == 0) {
-            System.out.println("Subject with ID " + subjectId + " not found! \n \n");
+        Stack<Subject> tempStack = new Stack<>();
+
+        if (count > 0) {
+            // If delete was successful, delete the course from the linked list and the stack
+            System.out.println("Subject with ID " + subjectId + " has been deleted \n\n");
+            while (!subjectList.isEmpty()) {
+                Subject subject = subjectList.pop();
+                if (!subject.getSubjectId().equals(subjectId)) {
+                    tempStack.push(subject);
+                }
+            }
+            while (!tempStack.isEmpty()) {
+                subjectList.push(tempStack.pop());
+            }
+        } else {
+            System.out.println("Delete failed for subject with ID " + subjectId + "\n\n");
         }
-
     }
+
 
     public void updateSubject() throws SQLException {
         connect = database.connectDb();
