@@ -1,11 +1,9 @@
 package org.example.Service;
 
 import org.example.Model.Result;
-import org.example.Model.Subject;
 import org.example.database;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.*;
 
 public class ResultStack<S> {
@@ -53,7 +51,7 @@ public class ResultStack<S> {
                 studentExists = rs.next();
             } catch (Exception e) {
                 System.out.println("Error checking if student exists: " + e.getMessage());
-            } finally {
+            }finally {
                 try {
                     if (preparedStatement != null) {
                         preparedStatement.close();
@@ -78,14 +76,14 @@ public class ResultStack<S> {
             // Validate subjectId input
             boolean subjectExists = false;
             try {
-                connect = database.connectDb();
+//                connect = database.connectDb();
                 preparedStatement = connect.prepareStatement("SELECT * FROM subject WHERE subjectId = ?");
                 preparedStatement.setString(1, subjectId);
                 ResultSet rs = preparedStatement.executeQuery();
                 subjectExists = rs.next();
             } catch (Exception e) {
                 System.out.println("Error checking if subject exists: " + e.getMessage());
-            } finally {
+            }finally {
                 try {
                     if (preparedStatement != null) {
                         preparedStatement.close();
@@ -165,7 +163,7 @@ public class ResultStack<S> {
                 System.out.println("Result saved successfully! \n\n ");
             } catch (Exception e) {
                 System.out.println("Error saving result: " + e.getMessage());
-            } finally {
+            }finally {
                 try {
                     if (preparedStatement != null) {
                         preparedStatement.close();
@@ -179,6 +177,9 @@ public class ResultStack<S> {
             }
 
             results.push(result);
+        }
+        while (!results.isEmpty()) {
+            results.pop();
         }
     }
 
@@ -253,8 +254,7 @@ public class ResultStack<S> {
                     "0 for back to menu \n" +
                     "Choose: ");
             while (input.hasNext()) {
-                String chooseStr = input.nextLine();
-                choose = Integer.parseInt(chooseStr);
+                choose = Integer.parseInt(input.next());
                 if (choose < 0 || choose > 6) {
                     System.out.print("Invalid value, please type number in range of 0 - 6: ");
                     continue;
@@ -564,15 +564,18 @@ public class ResultStack<S> {
                 float total = result.getFloat("totalmark");
                 String stdResult = result.getString("result");
 
+//                Sort descending
                 stack.push(String.format("| %-10s | %-20s | %-20s | %-10s | %-10s | %-10s | %-10s |%n", studentId, subjectId, courseId, midterm, finalScore, total, stdResult));
-                System.out.format("| %-10s | %-20s | %-20s | %-10s | %-10s | %-10s | %-10s |%n", studentId, subjectId, courseId, midterm, finalScore, total, stdResult);
+
+//                sort descending
+//                System.out.format("| %-10s | %-20s | %-20s | %-10s | %-10s | %-10s | %-10s |%n", studentId, subjectId, courseId, midterm, finalScore, total, stdResult);
             }
-            System.out.format("+------------+----------------------+----------------------+------------+------------+------------+------------+%n");
 
             while (!stack.isEmpty()) {
                 System.out.print(stack.pop());
             }
         }
+        System.out.format("+------------+----------------------+----------------------+------------+------------+------------+------------+%n \n\n");
     }
 
 }
