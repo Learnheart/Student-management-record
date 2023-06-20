@@ -1,5 +1,6 @@
 package org.example.Service;
 
+import org.example.Model.Course;
 import org.example.Model.Subject;
 import org.example.database;
 
@@ -9,7 +10,7 @@ import java.util.Scanner;
 import java.util.Stack;
 
 public class SubjectStack<S> {
-    private LinkedList<Subject> subjectList = new LinkedList<Subject>();
+    private Stack<Subject> subjectList = new Stack<>();
     private Scanner input = new Scanner(System.in);
 
     private Connection connect;
@@ -169,25 +170,29 @@ public class SubjectStack<S> {
 
     public void printSubject() throws SQLException {
         connect = database.connectDb();
-
         statement = connect.createStatement();
-
-        String printSubject = "SELECT * FROM subject";
-        result = statement.executeQuery(printSubject);
-
+        String print = "SELECT * FROM subject";
+        result = statement.executeQuery(print);
         if (!result.isBeforeFirst()) {
-            System.out.println("List of subject is empty");
-        }else {
-            System.out.format("| %-10s | %-20s |\n", "ID", "Subject name");
-            System.out.println("+------------+----------------------+");
+            System.out.println("List of subject is empty.");
+        } else {
+            System.out.println("+------------+--------------------------------+");
+            System.out.format("| %-10s | %-30s | \n", "ID", "Subject name");
+            System.out.println("+------------+--------------------------------+");
 
             while (result.next()) {
                 String subjectId = result.getString("subjectId");
                 String subjectName = result.getString("subjectName");
 
-                System.out.format("| %-10s | %-20s |\n", subjectId, subjectName);
+                Subject subject = new Subject(subjectId, subjectName);
+                subjectList.push(subject);
             }
-            System.out.println("+------------+----------------------+");
+            while (!subjectList.empty()) {
+                Subject subject = subjectList.pop();
+                System.out.printf("| %-10s | %-30s |\n", subject.getSubjectId(), subject.getSubjectName());
+            }
+            System.out.println("+------------+--------------------------------+");
+            System.out.println();
         }
 //        function inside table
         int choose = 0;
@@ -231,7 +236,6 @@ public class SubjectStack<S> {
                     break;
             }
         }while (choose != 0);
-        return;
 
     }
 
@@ -250,18 +254,19 @@ public class SubjectStack<S> {
 
         boolean found = false;
 
-        System.out.format("| %-10s | %-20s |\n", "ID", "Subject name");
-        System.out.println("+------------+----------------------+");
+        System.out.println("+------------+--------------------------------+");
+        System.out.format("| %-10s | %-30s |\n", "ID", "Subject name");
+        System.out.println("+------------+--------------------------------+");
         while (result.next()) {
             String subjectId = result.getString("subjectId");
             String subjectName = result.getString("subjectName");
 
-            System.out.format("| %-10s | %-20s |\n", subjectId, subjectName);
+            System.out.format("| %-10s | %-30s |\n", subjectId, subjectName);
             System.out.println("\n");
 
             found = true;
         }
-
+        System.out.println("+------------+--------------------------------+");
         if (!found) {
             System.out.println("No record found");
         }

@@ -1,15 +1,17 @@
 package org.example.Service;
 
 import org.example.Model.Course;
+import org.example.Model.Student;
 import org.example.database;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Stack;
 
 public class CourseStack<S> {
-    private LinkedList<Course> courseList = new LinkedList<Course>();
+    private Stack<Course> courseList = new Stack<>();
     private Scanner input = new Scanner(System.in);
 
     private Connection connect;
@@ -75,48 +77,40 @@ public class CourseStack<S> {
     }
 
     public void printAllCourses() throws SQLException {
-        System.out.println("Printing all courses:");
 
         connect = database.connectDb();
-        String selectAllCourses = "SELECT * FROM course";
         statement = connect.createStatement();
-        result = statement.executeQuery(selectAllCourses);
-
-        LinkedList<Course> courseList = new LinkedList<>();
-        while(result.next()) {
-            String courseId = result.getString("courseId");
-            String courseName = result.getString("courseName");
-
-            Course course = new Course(courseId, courseName);
-            courseList.add(course);
-        }
-
-        if (courseList.isEmpty()) {
-            System.out.println("List of courses is empty");
+        String query = "SELECT * FROM course";
+        result = statement.executeQuery(query);
+        if (!result.isBeforeFirst()) {
+            System.out.println("List of course is empty.");
         } else {
-            // Create a stack to reverse the order of courses
-            Stack<Course> courseStack = new Stack<>();
+            System.out.format("+------------+----------------------+\n");
+            System.out.format("| %-10s | %-20s | \n", "ID", "Semester");
+            System.out.format("+------------+----------------------+\n");
 
-            // Push each course onto the stack
-            for (Course course : courseList) {
-                courseStack.push(course);
+            while (result.next()) {
+                String courseId = result.getString("courseId");
+                String courseName = result.getString("courseName");
+
+//                System.out.printf("| %-10s | %-25s | %-30s | %-15s | %-10s | %-20s | %-20s | %s",
+//                        studentId, studentName, studentEmail, studentBirth, gender, address, phoneNumber, major);
+                Course course = new Course(courseId, courseName);
+                courseList.push(course);
             }
-
-            // Print table header
-            System.out.format("|%-10s | %-20s |\n", "Course ID", "Course Name");
-            System.out.println("----------------------------------------");
-
-            // Pop each course from the stack and print it
-            while (!courseStack.isEmpty()) {
-                Course course = courseStack.pop();
-                String courseId = course.getCourseId();
-                String courseName = course.getCourseName();
-                System.out.format("| %-10s | %-20s |\n", courseId, courseName);
-                System.out.println();
+            while (!courseList.empty()) {
+                Course course = courseList.pop();
+                System.out.printf("| %-10s | %-20s |\n", course.getCourseId(), course.getCourseName());
             }
+            System.out.format("+------------+----------------------+\n");
+            System.out.println();
         }
 
-        int choose = 0;
+        // Close database connection and statement
+        result.close();
+        statement.close();
+        connect.close();
+            int choose = -1;
         do {
             System.out.println("Enter the number here: \n" +
                     "1 for add new course \t" +
@@ -129,7 +123,7 @@ public class CourseStack<S> {
 
             while (input.hasNext()) {
 
-                choose = Integer.parseInt(input.nextLine());
+                choose = Integer.parseInt(input.next());
                 if (choose < 0 || choose > 5) {
                     System.out.print("Invalid value, please type number in range of 0 - 5: ");
                     continue;
@@ -163,7 +157,7 @@ public class CourseStack<S> {
         connect = database.connectDb();
 
         System.out.println("Enter the id of course you want to update: ");
-        String courseId = input.nextLine();
+        String courseId = input.next();
 
         // Prepare a SELECT statement to retrieve the course with the given ID
         String selectCourseById = "SELECT * FROM course WHERE courseId = ?";
@@ -215,7 +209,7 @@ public class CourseStack<S> {
         connect = database.connectDb();
 
         System.out.println("Enter the id of course you want to delete: ");
-        String courseId = input.nextLine();
+        String courseId = input.next();
 
         // Prepare a SELECT statement to retrieve the course with the given ID
         String selectCourseById = "SELECT * FROM course WHERE courseId = ?";
@@ -255,31 +249,40 @@ public class CourseStack<S> {
 
 
     public void searchCourse() throws SQLException {
-        System.out.println("Enter search term: ");
-        String searchTerm = input.nextLine();
-
         connect = database.connectDb();
-        String selectMatchingCourses = "SELECT * FROM course WHERE courseId LIKE ? OR courseName LIKE ?";
-        preparedStatement = connect.prepareStatement(selectMatchingCourses);
-        preparedStatement.setString(1, "%" + searchTerm + "%");
-        preparedStatement.setString(2, "%" + searchTerm + "%");
+        statement = connect.createStatement();
+
+        System.out.println("Enter the ID of the subject you want to search: ");
+        String keyword = input.next();
+
+        String searchCourse = "SELECT * FROM course WHERE courseId = ? OR courseName = ?";
+        preparedStatement = connect.prepareStatement(searchCourse);
+        preparedStatement.setString(1, keyword);
+        preparedStatement.setString(2, keyword);
+
         result = preparedStatement.executeQuery();
 
-        if (!result.isBeforeFirst()) {
-            System.out.println("No courses found matching search term");
-        } else {
-            // Print table header
-            System.out.format("|%-10s | %-20s |\n", "Course ID", "Course Name");
-            System.out.println("----------------------------------------");
+        boolean found = false;
 
-            while (result.next()) {
-                String courseId = result.getString("courseId");
-                String courseName = result.getString("courseName");
-                System.out.format("| %-10s | %-20s |\n", courseId, courseName);
-                System.out.println();
-            }
+        System.out.format("+------------+----------------------+\n");
+        System.out.format("| %-10s | %-20s |\n", "ID", "Semester");
+        System.out.format("+------------+----------------------+\n");
+
+        while (result.next()) {
+            String courseId = result.getString("courseId");
+            String courseName = result.getString("courseName");
+
+            System.out.format("| %-10s | %-20s |\n", courseId, courseName);
+
+            Course course = new Course(courseId, courseName);
+            courseList.push(course);
+
+            found = true;
+        }
+        System.out.format("+------------+----------------------+\n");
+        if (!found) {
+            System.out.println("No matching records found.\n\n");
         }
     }
-
 
 }

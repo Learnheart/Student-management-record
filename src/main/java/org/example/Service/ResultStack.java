@@ -506,7 +506,7 @@ public class ResultStack<S> {
         statement = connect.createStatement();
 
         System.out.println("Enter the ID of the student you want to search: ");
-        String keyword = input.nextLine();
+        String keyword = input.next();
 
         String searchResult = "SELECT* FROM result WHERE studentId = ?";
         preparedStatement = connect.prepareStatement(searchResult);
@@ -567,7 +567,7 @@ public class ResultStack<S> {
 //                Sort descending
                 stack.push(String.format("| %-10s | %-20s | %-20s | %-10s | %-10s | %-10s | %-10s |%n", studentId, subjectId, courseId, midterm, finalScore, total, stdResult));
 
-//                sort descending
+//                sort ascending
 //                System.out.format("| %-10s | %-20s | %-20s | %-10s | %-10s | %-10s | %-10s |%n", studentId, subjectId, courseId, midterm, finalScore, total, stdResult);
             }
 
