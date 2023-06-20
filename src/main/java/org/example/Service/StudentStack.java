@@ -237,7 +237,7 @@ public class StudentStack<S> {
         if (!result.isBeforeFirst()) {
             System.out.println("List of students is empty.");
         } else {
-            while (result.next()) {
+            while (result.next()) {         //shift pointer to next row
                 int studentId = result.getInt("studentId");
                 String studentName = result.getString("studentName");
                 String studentEmail = result.getString("studentEmail");
@@ -261,7 +261,7 @@ public class StudentStack<S> {
         }
     }
 
-  /*  In this modified code, we created a `stack` of `Student` objects and pushed the updated `Student` object onto the
+  /*  created a `stack` of `Student` objects and pushed the updated `Student` object onto the
     `stack`. Then, we updated the database with the new student information using the `PreparedStatement` object. */
 //    The advantage of using a stack in the updateStudent() function is that it allows us to keep track of all the updated student
 //    information in the order that they were updated. This means that we can easily print out the updated information for all students
@@ -475,7 +475,7 @@ public class StudentStack<S> {
                     "0 for back to menu \n" +
                     "Choose: ");
             while (input.hasNext()) {
-                choose = Integer.parseInt(input.nextLine());
+                choose = Integer.parseInt(input.next());
                 if (choose < 0 || choose > 6) {
                     System.out.print("Invalid value, please type number in range of 0 - 6: ");
                     continue;

@@ -71,12 +71,12 @@ public class ResultStack<S> {
 
 
             System.out.println("Enter subject ID:");
-            String subjectId = input.nextLine();
+            String subjectId = input.next();
 
             // Validate subjectId input
             boolean subjectExists = false;
             try {
-//                connect = database.connectDb();
+                connect = database.connectDb();
                 preparedStatement = connect.prepareStatement("SELECT * FROM subject WHERE subjectId = ?");
                 preparedStatement.setString(1, subjectId);
                 ResultSet rs = preparedStatement.executeQuery();
@@ -97,13 +97,13 @@ public class ResultStack<S> {
             }
             if (!subjectExists) {
                 System.out.println("Subject with ID " + subjectId + " does not exist in the database. Please try again.");
-//                addResult();
-//                return;
+                addResult();
+                return;
             }
 
 
             System.out.println("Enter course ID:");
-            String courseId = input.nextLine();
+            String courseId = input.next();
 
             // Validate courseId input
             boolean courseExists = false;
@@ -208,6 +208,7 @@ public class ResultStack<S> {
             }
 
             // Print out the results
+            System.out.format("+------------+----------------------+----------------------+------------+------------+------------+------------+%n");
             String format = "| %-10s | %-20s | %-20s | %-10s | %-10s | %-10s | %-10s |%n";
             System.out.format(format, "ID", "Subject", "Course", "Midterm", "Final", "Total", "Result");
             System.out.format("+------------+----------------------+----------------------+------------+------------+------------+------------+%n");
@@ -285,7 +286,9 @@ public class ResultStack<S> {
                 default:
                     break;
             }
-
+            if (choose == 0) {
+                break;
+            }
         }while (choose != 0);
 
 
@@ -296,7 +299,7 @@ public class ResultStack<S> {
         int studentId;
         while (true) {
             try {
-                studentId = Integer.parseInt(input.nextLine());
+                studentId = Integer.parseInt(input.next());
                 break;
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a valid student ID:");
@@ -449,7 +452,7 @@ public class ResultStack<S> {
         boolean validInput = false;
         while (!validInput) {
             System.out.println("Enter the id of student you want to delete: ");
-            String inputStr = input.nextLine();
+            String inputStr = input.next();
             if (inputStr.isEmpty()) {
                 System.out.println("Invalid input. Please enter an integer value.");
             } else {
@@ -471,7 +474,7 @@ public class ResultStack<S> {
         result = preparedStatement.executeQuery();
 
         if (!result.isBeforeFirst()) {
-            System.out.println("Result with ID " + studentId + " doesn't exist!");
+            System.out.println("Result with ID " + studentId + " and subject with ID" + subjectId + " doesn't exist!");
             return;
         }
 
@@ -516,6 +519,7 @@ public class ResultStack<S> {
 
         boolean found = false;
 
+        System.out.format("+------------+----------------------+----------------------+------------+------------+------------+------------+%n");
         String format = "| %-10s | %-20s | %-20s | %-10s | %-10s | %-10s | %-10s |%n";
         System.out.format(format, "ID", "Subject", "Course", "Midterm", "Final", "Total", "Result");
         System.out.format("+------------+----------------------+----------------------+------------+------------+------------+------------+%n");
@@ -552,6 +556,7 @@ public class ResultStack<S> {
         if (!result.isBeforeFirst()) {
             System.out.println("List of result is empty.");
         } else {
+            System.out.format("+------------+----------------------+----------------------+------------+------------+------------+------------+%n");
             String format = "| %-10s | %-20s | %-20s | %-10s | %-10s | %-10s | %-10s |%n";
             System.out.format(format, "ID", "Subject", "Course", "Midterm", "Final", "Total", "Result");
             System.out.format("+------------+----------------------+----------------------+------------+------------+------------+------------+%n");

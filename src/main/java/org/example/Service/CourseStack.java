@@ -155,55 +155,58 @@ public class CourseStack<S> {
 
     public void updateCourse() throws SQLException {
         connect = database.connectDb();
+        try {
+            System.out.println("Enter the id of course you want to update: ");
+            String courseId = input.next();
 
-        System.out.println("Enter the id of course you want to update: ");
-        String courseId = input.next();
+            String selectCourse = "SELECT * FROM course WHERE courseId = ?";
+            preparedStatement = connect.prepareStatement(selectCourse);
+            preparedStatement.setString(1, courseId);
+            result = preparedStatement.executeQuery();
 
-        // Prepare a SELECT statement to retrieve the course with the given ID
-        String selectCourseById = "SELECT * FROM course WHERE courseId = ?";
-        preparedStatement = connect.prepareStatement(selectCourseById);
-        preparedStatement.setString(1, courseId);
-        result = preparedStatement.executeQuery();
+            if (!result.isBeforeFirst()) {
+                System.out.println("Course with ID " + courseId + " doesn't exist!");
+                return;
+            }
 
-        if (!result.isBeforeFirst()) {
-            System.out.println("Course with ID " + courseId + " doesn't exist!");
-            return;
-        }
+            result.next();
 
-        // If the course exists, display its current name and prompt the user for a new name
-        result.next();
-        String currentCourseId = result.getString("courseId");
-        String currentCourseName = result.getString("courseName");
-        System.out.println("Current course name is: " + currentCourseName);
-        System.out.println("Enter new course name: ");
-        String newCourseName = input.nextLine();
+            String currentCourse = result.getString("courseName");
 
-        // Prepare an UPDATE statement to update the course name in the database
-        String updateCourse = "UPDATE course SET courseName = ? WHERE courseId = ?";
-        preparedStatement = connect.prepareStatement(updateCourse);
-        preparedStatement.setString(1, newCourseName);
-        preparedStatement.setString(2, courseId);
-        int count = preparedStatement.executeUpdate();
+            System.out.println("Current course name is: " + currentCourse);
 
-        Stack<Course> tempStack = new Stack<>();
+            Stack<String> updatesStack = new Stack<>();
+            updatesStack.push(courseId);
 
-        if (count > 0) {
-            // If the update was successful, update the course name in the linked list as well
-            System.out.println("Course with ID " + courseId + " has been updated");
-            while (!courseList.isEmpty()) {
-                Course course = courseList.pop();
-                if (course.getCourseId().equals(currentCourseId)) {
-                    course.setCourseName(newCourseName);
+            input.nextLine();
+
+            System.out.println("Enter new course name: ");
+            String courseName = input.nextLine();
+
+            updatesStack.push(courseName);
+
+            while (!updatesStack.empty()) {
+                String id = updatesStack.pop();
+                String name = updatesStack.pop();
+
+                String updatedCourse = "UPDATE course SET courseName = ? WHERE courseId = ?";
+                preparedStatement = connect.prepareStatement(updatedCourse);
+                preparedStatement.setString(1, id);
+                preparedStatement.setString(2, name);
+                int count = preparedStatement.executeUpdate();
+                if (count > 0) {
+                    System.out.println("Course ID " + id + " has been updated");
+                } else {
+                    System.out.println("Updated failed for course with ID " + id);
                 }
-                tempStack.push(course);
             }
-            while (!tempStack.isEmpty()) {
-                courseList.push(tempStack.pop());
+        } finally {
+            if (connect != null) {
+                connect.close();
             }
-        } else {
-            System.out.println("Update failed for course with ID " + courseId);
         }
     }
+
 
     public void deleteCourse() throws SQLException {
         connect = database.connectDb();
@@ -252,7 +255,7 @@ public class CourseStack<S> {
         connect = database.connectDb();
         statement = connect.createStatement();
 
-        System.out.println("Enter the ID of the subject you want to search: ");
+        System.out.println("Enter the ID of the semester you want to search: ");
         String keyword = input.next();
 
         String searchCourse = "SELECT * FROM course WHERE courseId = ? OR courseName = ?";
@@ -272,14 +275,14 @@ public class CourseStack<S> {
             String courseId = result.getString("courseId");
             String courseName = result.getString("courseName");
 
-            System.out.format("| %-10s | %-20s |\n", courseId, courseName);
-
+            System.out.format("| %-10s | %-20s | \n", courseId, courseName);
             Course course = new Course(courseId, courseName);
             courseList.push(course);
 
             found = true;
         }
-        System.out.format("+------------+----------------------+\n");
+        System.out.format("+------------+----------------------+");
+        System.out.println("\n");
         if (!found) {
             System.out.println("No matching records found.\n\n");
         }
